@@ -3,184 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FitTrack Pro - Advanced Gym Tracker</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>GymTrack Pro - Advanced Gym Progress Tracker</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💪</text></svg>">
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <header class="header">
+        <header>
             <div class="logo">
-                <i class="fas fa-dumbbell"></i>
-                <h1>FitTrack <span>Pro</span></h1>
+                <div class="logo-icon">💪</div>
+                <h1>GymTrack Pro</h1>
             </div>
-            <div class="date-display" id="current-date">
-                <!-- Date will be populated by JS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalWorkouts">0</div>
+                    <div class="stat-label">Workouts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="streakDays">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalWeight">0</div>
+                    <div class="stat-label">Total kg Lifted</div>
+                </div>
             </div>
         </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Workout Input Section -->
-            <section class="section workout-input-section">
-                <h2><i class="fas fa-plus-circle"></i> Add Workout</h2>
-                <form id="workout-form">
-                    <div class="form-group">
-                        <label for="exercise-name"><i class="fas fa-running"></i> Exercise Name</label>
-                        <input type="text" id="exercise-name" placeholder="e.g. Bench Press" required>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="exercise-type"><i class="fas fa-tag"></i> Type</label>
-                            <select id="exercise-type">
-                                <option value="strength">Strength</option>
-                                <option value="cardio">Cardio</option>
-                                <option value="flexibility">Flexibility</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="muscle-group"><i class="fas fa-user"></i> Muscle Group</label>
-                            <select id="muscle-group">
-                                <option value="chest">Chest</option>
-                                <option value="back">Back</option>
-                                <option value="legs">Legs</option>
-                                <option value="shoulders">Shoulders</option>
-                                <option value="arms">Arms</option>
-                                <option value="core">Core</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="sets"><i class="fas fa-layer-group"></i> Sets</label>
-                            <input type="number" id="sets" min="1" max="20" value="3" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="reps"><i class="fas fa-redo"></i> Reps</label>
-                            <input type="number" id="reps" min="1" max="100" value="10" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="weight"><i class="fas fa-weight-hanging"></i> Weight (kg)</label>
-                            <input type="number" id="weight" min="0" max="500" value="0" step="0.5" required>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn-primary">
-                        <i class="fas fa-plus"></i> Add Exercise to Workout Plan
-                    </button>
-                </form>
-            </section>
+        <div class="nav-tabs">
+            <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+            <button class="tab-btn" data-tab="workouts">Workouts</button>
+            <button class="tab-btn" data-tab="progress">Progress</button>
+            <button class="tab-btn" data-tab="plan">Plan Session</button>
+            <button class="tab-btn" data-tab="calendar">Calendar</button>
+        </div>
 
-            <!-- Timer Section -->
-            <section class="section timer-section">
-                <h2><i class="fas fa-clock"></i> Rest Timer</h2>
-                <div class="timer-container">
-                    <div class="timer-display" id="timer-display">01:30</div>
-                    <div class="timer-controls">
-                        <button id="timer-start" class="timer-btn">
-                            <i class="fas fa-play"></i> Start
-                        </button>
-                        <button id="timer-pause" class="timer-btn">
-                            <i class="fas fa-pause"></i> Pause
-                        </button>
-                        <button id="timer-reset" class="timer-btn">
-                            <i class="fas fa-redo"></i> Reset
-                        </button>
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Today's Workout</h2>
+                        <span class="badge badge-primary" id="todayWorkoutStatus">Not Started</span>
                     </div>
-                    <div class="timer-presets">
-                        <button class="preset-btn" data-time="30">30s</button>
-                        <button class="preset-btn" data-time="60">60s</button>
-                        <button class="preset-btn" data-time="90">90s</button>
-                        <button class="preset-btn" data-time="120">2min</button>
-                        <button class="preset-btn" data-time="180">3min</button>
-                    </div>
-                    <div class="custom-time">
-                        <input type="number" id="custom-time" min="10" max="600" value="90" placeholder="Custom seconds">
-                        <button id="set-custom-time" class="btn-small">
-                            <i class="fas fa-check"></i> Set
-                        </button>
+                    <div id="todaysWorkout">
+                        <div class="empty-state">
+                            <i class="fas fa-dumbbell"></i>
+                            <h3>No workout planned for today</h3>
+                            <p>Plan a session to get started!</p>
+                            <button class="btn btn-primary mt-3" id="planTodayBtn">
+                                <i class="fas fa-plus"></i> Plan Today's Workout
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </section>
 
-            <!-- Workout Plan Section -->
-            <section class="section workout-plan-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-clipboard-list"></i> Today's Workout Plan</h2>
-                    <button id="clear-workout" class="btn-small btn-danger">
-                        <i class="fas fa-trash"></i> Clear All
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recent Progress</h2>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="streakProgress" style="width: 0%"></div>
+                    </div>
+                    <p class="card-subtitle">Current streak: <span id="currentStreak">0</span> days</p>
+                    
+                    <h3 class="card-title mt-4">Personal Records</h3>
+                    <div id="personalRecords">
+                        <div class="exercise-item">
+                            <div class="exercise-name">Bench Press</div>
+                            <div class="exercise-sets">120 kg</div>
+                        </div>
+                        <div class="exercise-item">
+                            <div class="exercise-name">Squat</div>
+                            <div class="exercise-sets">150 kg</div>
+                        </div>
+                        <div class="exercise-item">
+                            <div class="exercise-name">Deadlift</div>
+                            <div class="exercise-sets">180 kg</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Upcoming Workouts</h2>
+                    </div>
+                    <ul class="workout-list" id="upcomingWorkouts">
+                        <!-- Will be populated by JS -->
+                    </ul>
+                    <button class="btn btn-outline w-100 mt-3" id="viewAllWorkoutsBtn">
+                        <i class="fas fa-list"></i> View All Workouts
                     </button>
                 </div>
-                <div class="workout-list" id="workout-list">
-                    <!-- Workout items will be added here by JS -->
-                    <div class="empty-state">
-                        <i class="fas fa-dumbbell"></i>
-                        <p>No exercises added yet. Start by adding your first exercise!</p>
-                    </div>
-                </div>
-                <div class="workout-stats">
-                    <div class="stat">
-                        <span class="stat-value" id="total-exercises">0</span>
-                        <span class="stat-label">Exercises</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value" id="total-sets">0</span>
-                        <span class="stat-label">Sets</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value" id="total-volume">0</span>
-                        <span class="stat-label">Volume (kg)</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Progress Section -->
-            <section class="section progress-section">
-                <h2><i class="fas fa-chart-line"></i> Weekly Progress</h2>
-                <div class="progress-chart">
-                    <canvas id="progress-chart"></canvas>
-                </div>
-                <div class="progress-summary">
-                    <div class="progress-item">
-                        <span class="progress-label">Workouts This Week</span>
-                        <span class="progress-value">4</span>
-                    </div>
-                    <div class="progress-item">
-                        <span class="progress-label">Total Exercises</span>
-                        <span class="progress-value">28</span>
-                    </div>
-                    <div class="progress-item">
-                        <span class="progress-label">Avg. Intensity</span>
-                        <span class="progress-value">7.5/10</span>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>FitTrack Pro &copy; 2023 | Advanced Gym Tracking</p>
-            <div class="footer-links">
-                <button id="export-data" class="btn-small">
-                    <i class="fas fa-download"></i> Export Data
-                </button>
-                <button id="reset-data" class="btn-small btn-danger">
-                    <i class="fas fa-eraser"></i> Reset All
-                </button>
             </div>
-        </footer>
+        </div>
+
+        <!-- Workouts Tab -->
+        <div id="workouts" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Workout History</h2>
+                    <button class="btn btn-primary" id="addWorkoutBtn">
+                        <i class="fas fa-plus"></i> Log Workout
+                    </button>
+                </div>
+                <div class="card-subtitle">Your completed workout sessions</div>
+                <div id="workoutHistory">
+                    <!-- Will be populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Tab -->
+        <div id="progress" class="tab-content">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Progress Charts</h2>
+                    </div>
+                    <canvas id="progressChart" height="200"></canvas>
+                    <div class="form-group mt-3">
+                        <label class="form-label">Select Exercise:</label>
+                        <select class="form-select" id="exerciseSelect">
+                            <option value="bench">Bench Press</option>
+                            <option value="squat">Squat</option>
+                            <option value="deadlift">Deadlift</option>
+                            <option value="shoulder">Shoulder Press</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Body Metrics</h2>
+                        <button class="btn btn-outline btn-small" id="addMetricBtn">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
+                    </div>
+                    <div id="bodyMetrics">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="weightMetric">--</div>
+                                <div class="stat-label">Weight (kg)</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="bodyFatMetric">--</div>
+                                <div class="stat-label">Body Fat %</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="armMetric">--</div>
+                                <div class="stat-label">Arm (cm)</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="chestMetric">--</div>
+                                <div class="stat-label">Chest (cm)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress-bar mt-4">
+                        <div class="progress-fill" id="weightProgress" style="width: 60%"></div>
+                    </div>
+                    <p class="card-subtitle">Weight progress towards goal: <span id="weightGoal">80</span> kg</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Plan Session Tab -->
+        <div id="plan" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Plan New Workout Session</h2>
+                </div>
+                <form id="workoutForm">
+                    <div class="form-group">
+                        <label class="form-label">Workout Name</label>
+                        <input type="text" class="form-input" id="workoutName" placeholder="e.g., Upper Body Strength" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Workout Date</label>
+                        <input type="date" class="form-input" id="workoutDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Workout Type</label>
+                        <select class="form-select" id="workoutType">
+                            <option value="strength">Strength Training</option>
+                            <option value="hypertrophy">Hypertrophy</option>
+                            <option value="endurance">Endurance</option>
+                            <option value="cardio">Cardio</option>
+                            <option value="flexibility">Flexibility</option>
+                        </select>
+                    </div>
+
+                    <div class="card-header mt-4">
+                        <h3 class="card-title">Exercises</h3>
+                        <button type="button" class="btn btn-outline btn-small" id="addExerciseBtn">
+                            <i class="fas fa-plus"></i> Add Exercise
+                        </button>
+                    </div>
+
+                    <div id="exercisesContainer">
+                        <!-- Exercises will be added here -->
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-input" id="workoutNotes" rows="3" placeholder="Any additional notes..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-calendar-plus"></i> Save Workout Plan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Calendar Tab -->
+        <div id="calendar" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Workout Calendar</h2>
+                    <div>
+                        <button class="btn btn-outline btn-small" id="prevMonthBtn">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span id="currentMonth" class="mx-2">January 2023</span>
+                        <button class="btn btn-outline btn-small" id="nextMonthBtn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="calendar" id="calendarGrid">
+                    <!-- Calendar will be generated by JS -->
+                </div>
+                <div class="mt-4">
+                    <h3 class="card-title">Legends</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value"><span style="color: var(--primary)">■</span></div>
+                            <div class="stat-label">Workout Day</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value"><span style="color: var(--secondary)">■</span></div>
+                            <div class="stat-label">Today</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value"><span style="color: var(--success)">■</span></div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast">
-        <span id="toast-message"></span>
+    <!-- Modals -->
+    <div class="modal" id="workoutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Log Completed Workout</h2>
+                <button class="close-btn" id="closeWorkoutModal">&times;</button>
+            </div>
+            <form id="logWorkoutForm">
+                <div class="form-group">
+                    <label class="form-label">Select Workout</label>
+                    <select class="form-select" id="completedWorkoutSelect">
+                        <!-- Options will be populated by JS -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Duration (minutes)</label>
+                    <input type="number" class="form-input" id="workoutDuration" min="5" max="300" value="60">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Rating (1-10)</label>
+                    <input type="range" class="form-input" id="workoutRating" min="1" max="10" value="7">
+                    <div class="d-flex justify-content-between">
+                        <span>1</span>
+                        <span id="ratingValue">7</span>
+                        <span>10</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-check"></i> Log Completed Workout
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div class="modal" id="metricModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Body Metrics</h2>
+                <button class="close-btn" id="closeMetricModal">&times;</button>
+            </div>
+            <form id="metricForm">
+                <div class="form-group">
+                    <label class="form-label">Weight (kg)</label>
+                    <input type="number" step="0.1" class="form-input" id="inputWeight" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Body Fat %</label>
+                    <input type="number" step="0.1" class="form-input" id="inputBodyFat">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Arm Circumference (cm)</label>
+                    <input type="number" step="0.1" class="form-input" id="inputArm">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Chest Circumference (cm)</label>
+                    <input type="number" step="0.1" class="form-input" id="inputChest">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-save"></i> Save Metrics
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>GymTrack Pro &copy; 2023 | Track your fitness journey with precision</p>
+        <p class="mt-1">All data is stored locally in your browser</p>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 </html>
